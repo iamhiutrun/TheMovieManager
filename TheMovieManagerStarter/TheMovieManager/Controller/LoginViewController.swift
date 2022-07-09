@@ -18,16 +18,43 @@ class LoginViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        emailTextField.text = ""
-        passwordTextField.text = ""
+        emailTextField.text = "hiutrun"
+        passwordTextField.text = "Hieu123456"
     }
     
     @IBAction func loginTapped(_ sender: UIButton) {
-        performSegue(withIdentifier: "completeLogin", sender: nil)
+        TMDBClient.getRequestToken(completion: handleRequestTokenResponse(success:error:))
     }
     
     @IBAction func loginViaWebsiteTapped() {
         performSegue(withIdentifier: "completeLogin", sender: nil)
     }
     
+    func handleRequestTokenResponse(success: Bool, error: Error?){
+        if success{
+            print(TMDBClient.Auth.requestToken)
+            DispatchQueue.main.async {
+                TMDBClient.login(username: self.emailTextField.text ?? "",
+                                 password: self.passwordTextField.text ?? "",
+                                 completion: self.handleLoginRequestResponse(success:error:))
+            }
+        }
+    }
+    
+    func handleLoginRequestResponse(success:Bool, error: Error?){
+        if success{
+            print(success)
+        }else{
+            print(error)
+        }
+//        TMDBClient.createSessionId(completion: handleCreateSessionId(success:error:))
+    }
+    
+    func handleCreateSessionId(success:Bool, error:Error?){
+        if success{
+            print(TMDBClient.Auth.sessionId)
+        }else{
+            print(error)
+        }
+    }
 }
